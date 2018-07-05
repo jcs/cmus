@@ -87,7 +87,8 @@ const char *artist_sort_name(const struct artist *);
 enum aaa_mode {
 	AAA_MODE_ALL,
 	AAA_MODE_ARTIST,
-	AAA_MODE_ALBUM
+	AAA_MODE_ALBUM,
+	AAA_MODE_RANDOM_ALBUM
 };
 
 extern struct editable lib_editable;

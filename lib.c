@@ -204,7 +204,7 @@ static int aaa_mode_filter(const struct simple_track *track)
 {
 	const struct album *album = ((struct tree_track *)track)->album;
 
-	if (aaa_mode == AAA_MODE_ALBUM)
+	if (aaa_mode == AAA_MODE_ALBUM || aaa_mode == AAA_MODE_RANDOM_ALBUM)
 		return CUR_ALBUM == album;
 
 	if (aaa_mode == AAA_MODE_ARTIST)
@@ -214,10 +214,20 @@ static int aaa_mode_filter(const struct simple_track *track)
 	return 1;
 }
 
+/* only for AAA_MODE_RANDOM_ALBUM */
+static int next_random_album_filter(const struct simple_track *track)
+{
+	const struct album *album = ((struct tree_track *)track)->album;
+
+	return CUR_ALBUM != album;
+}
+
 /* set next/prev (tree) {{{ */
 
 static struct tree_track *normal_get_next(void)
 {
+	struct tree_track *track;
+
 	if (lib_cur_track == NULL)
 		return normal_get_first();
 
@@ -232,6 +242,21 @@ static struct tree_track *normal_get_next(void)
 			return NULL;
 		/* first track of the current album */
 		return album_first_track(CUR_ALBUM);
+	}
+
+	if (aaa_mode == AAA_MODE_RANDOM_ALBUM) {
+		if (repeat)
+			/* first track of the current album */
+			return album_first_track(CUR_ALBUM);
+
+		/* go through shuffle list until we reach a song that is not on
+		 * the current album */
+		track = (struct tree_track *)shuffle_list_get_next(&lib_shuffle_root,
+				(struct shuffle_track *)lib_cur_track,
+				next_random_album_filter);
+		if (!track)
+			return NULL;
+		return album_first_track(track->album);
 	}
 
 	/* not last album of the artist? */
@@ -262,6 +287,8 @@ static struct tree_track *normal_get_next(void)
 
 static struct tree_track *normal_get_prev(void)
 {
+	struct tree_track *track;
+
 	if (lib_cur_track == NULL)
 		return normal_get_first();
 
@@ -276,6 +303,21 @@ static struct tree_track *normal_get_prev(void)
 			return NULL;
 		/* last track of the album */
 		return album_last_track(CUR_ALBUM);
+	}
+
+	if (aaa_mode == AAA_MODE_RANDOM_ALBUM) {
+		if (repeat)
+			/* last track of the current album */
+			return album_last_track(CUR_ALBUM);
+
+		/* go through shuffle list until we reach a song that is not on
+		 * the current album */
+		track = (struct tree_track *)shuffle_list_get_next(&lib_shuffle_root,
+				(struct shuffle_track *)lib_cur_track,
+				next_random_album_filter);
+		if (!track)
+			return NULL;
+		return album_last_track(track->album);
 	}
 
 	/* not first album of the artist? */

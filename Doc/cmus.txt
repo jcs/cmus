@@ -612,7 +612,7 @@ source <filename>
 	Read and execute commands from <filename>.
 
 toggle <option>
-	Toggle value of a toggle-able option (all booleans and tristate
+	Toggle value of a toggle-able option (all booleans and quadstate
 	*aaa_mode*).
 
 tqueue [NUM]
@@ -795,7 +795,7 @@ auto_expand_albums_follow, auto_expand_albums_search, auto_expand_albums_selcur 
 auto_reshuffle (true)
 	Reshuffle playlist when end of shuffle list is reached.
 
-aaa_mode (all) [all, artist, album]
+aaa_mode (all) [all, artist, album, random album]
 	Defines what tracks should be played in the library view.  Not used in
 	the other views. For example if set to *artist* the player behaves
 	like there were only the files of the currently playing artist in the

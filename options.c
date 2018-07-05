@@ -649,7 +649,7 @@ static void toggle_display_artist_sort_name(void *data)
 }
 
 const char * const aaa_mode_names[] = {
-	"all", "artist", "album", NULL
+	"all", "artist", "album", "random album", NULL
 };
 
 static void get_aaa_mode(void *data, char *buf, size_t size)
@@ -661,7 +661,7 @@ static void set_aaa_mode(void *data, const char *buf)
 {
 	int tmp;
 
-	if (!parse_enum(buf, 0, 2, aaa_mode_names, &tmp))
+	if (!parse_enum(buf, 0, 3, aaa_mode_names, &tmp))
 		return;
 
 	aaa_mode = tmp;
@@ -674,7 +674,7 @@ static void toggle_aaa_mode(void *data)
 	play_library = 1;
 
 	aaa_mode++;
-	aaa_mode %= 3;
+	aaa_mode %= 4;
 	update_statusline();
 }
 
